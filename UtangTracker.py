@@ -31,40 +31,40 @@ f.frame_inputs = tk.Frame(f.root)
 f.frame_inputs.pack(pady=10)
 
 tk.Label(f.frame_inputs, text="Lender").grid(row=0, column=0)
-entry_lender = tk.Entry(f.frame_inputs)
-entry_lender.grid(row=0, column=1)
+f.entry_lender = tk.Entry(f.frame_inputs)
+f.entry_lender.grid(row=0, column=1)
 
 tk.Label(f.frame_inputs, text="Amount").grid(row=1, column=0)
-entry_amount = tk.Entry(f.frame_inputs)
-entry_amount.grid(row=1, column=1)
+f.entry_amount = tk.Entry(f.frame_inputs)
+f.entry_amount.grid(row=1, column=1)
 
 tk.Label(f.frame_inputs, text="Interest").grid(row=2, column=0)
-entry_interest = tk.Entry(f.frame_inputs)
-entry_interest.grid(row=2, column=1)
+f.entry_interest = tk.Entry(f.frame_inputs)
+f.entry_interest.grid(row=2, column=1)
 
 tk.Label(f.frame_inputs, text="Date").grid(row=3, column=0)
-entry_date = tk.Entry(f.frame_inputs)
-entry_date.grid(row=3, column=1)
+f.entry_date = tk.Entry(f.frame_inputs)
+f.entry_date.grid(row=3, column=1)
 
 
 #ADD DEBT
 tk.Button(f.frame_inputs, text="Add Debt", command=f.add_debt).grid(row=4, columnspan=2, pady=5) #BUTTON add debt
 
 # TABLE
-tree = ttk.Treeview(
+f.tree = ttk.Treeview(
     f.root,
     columns=("ID", "Lender", "Remaining", "Interest", "Date", "Status"),
     show="headings"
 )
-tree.tag_configure("paid", background="#c8f7c5")    
-tree.tag_configure("unpaid", background="#f5b7b1")
-tree.tag_configure("partial", background="#fff3a0")  
+f.tree.tag_configure("paid", background="#c8f7c5")    
+f.tree.tag_configure("unpaid", background="#f5b7b1")
+f.tree.tag_configure("partial", background="#fff3a0")  
 
 for c in ("ID", "Lender", "Remaining", "Interest", "Date", "Status"):
-    tree.heading(c, text=c)
-    tree.column(c, width=150, anchor="center")
+    f.tree.heading(c, text=c)
+    f.tree.column(c, width=150, anchor="center")
     
-tree.pack(fill="both", expand="true")
+f.tree.pack(fill="both", expand="true")
 
 # PAYMENT
 f.frame_pay = tk.Frame(f.root)

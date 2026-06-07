@@ -1,9 +1,20 @@
 import json
 import os
 import tkinter as tk
-import UtangTracker as U
 from tkinter import ttk, messagebox
 from datetime import datetime
+
+root = None
+tree = None
+label_clock = None
+
+entry_lender = None
+entry_amount = None
+entry_interest = None
+entry_date = None
+
+entry_payment = None
+entry_search = None
 
 #init
 debts = []
@@ -31,8 +42,8 @@ def load_data(): #load data when program is opened
         d.setdefault("date", "N/A")
 
 def refresh_table(): #refreshes the table meaning it update the table when an action is done        
-    for item in U.tree.get_children():
-        U.tree.delete(item)
+    for item in tree.get_children():
+        tree.delete(item)
 
     for d in debts:
         if d["remaining"] == 0:
@@ -42,37 +53,39 @@ def refresh_table(): #refreshes the table meaning it update the table when an ac
         else:
             tag = "unpaid"
 
-        U.tree.insert("", "end", values=(
+        tree.insert("", "end", values=(
             d["id"],
             d["lender"],
             d["remaining"],
             d["interest"],
             d["date"],
             d["status"]
-        ), tags=(tag,))       
+        ), tags=(tag,))      
+
 #live clock function
 def live_clock():
     now = datetime.now()
     format = now.strftime("Y%-%m-%d %H:%M:%S")
-    U.label_clock.config(text=format)
-    U.root.after(1000, live_clock)
+    label_clock.config(text=format)
+    root.after(1000, live_clock)
+
 #live clock updated
 def update_clock():
     now = datetime.now()
     formatted = now.strftime("%B %d, %Y | %I:%M:%S %p")
-    U.label_clock.config(text=formatted)
-    U.root.after(1000, update_clock)
+    label_clock.config(text=formatted)
+    root.after(1000, update_clock)
 
 def add_debt():
     global next_id
     try:
         debt = {
             "id": next_id,
-            "lender": U.entry_lender.get(),
-            "amount": float(U.entry_amount.get()),
-            "remaining": float(U.entry_amount.get()),
-            "interest": float(U.entry_interest.get()),
-            "date": U.entry_date.get(),
+            "lender": entry_lender.get(),
+            "amount": float(entry_amount.get()),
+            "remaining": float(entry_amount.get()),
+            "interest": float(entry_interest.get()),
+            "date": entry_date.get(),
             "status": "Unpaid"
         }
 
@@ -89,12 +102,12 @@ def add_debt():
 #pay debt
 def pay_debt():
     try:
-        selected = U.tree.item(U.tree.focus(), "values")
+        selected = tree.item(tree.focus(), "values")
         if not selected:
             return messagebox.showwarning("Warning", "Select a debt first.")
 
         debt_id = int(selected[0])
-        payment = float(U.entry_payment.get())
+        payment = float(entry_payment.get())
 
         for d in debts:
             if d["id"] == debt_id:
@@ -121,10 +134,10 @@ def pay_debt():
         messagebox.showerror("Error", "Invalid input")
 # SEARCH
 def search_debt():
-    keyword = U.entry_search.get().lower()
+    keyword = entry_search.get().lower()
 
-    for item in U.tree.get_children(): #deletes the current list on the table once the keyword or id is searched
-        U.tree.delete(item)
+    for item in tree.get_children(): #deletes the current list on the table once the keyword or id is searched
+        tree.delete(item)
 
     for d in debts:
         if keyword == "" or keyword in d["lender"].lower() or keyword == str(d["id"]): #searches for keywords, and id of the lender, converts all values to lowercase 
@@ -134,7 +147,7 @@ def search_debt():
              tag = "partial"
             else:
              tag = "unpaid" #indicate the color of paid and unpaid
-            U.tree.insert("", "end", values=(
+            tree.insert("", "end", values=(
                 d["id"],
                 d["lender"],
                 d["remaining"],
@@ -143,8 +156,8 @@ def search_debt():
                 d["status"]
             ), tags=(tag,))
 def clear_search():
-    for item in U.tree.get_children():
-        U.tree.delete(item)
+    for item in tree.get_children():
+        tree.delete(item)
     for d in debts:
         if d["remaining"] == 0:
              tag = "paid"
@@ -152,7 +165,7 @@ def clear_search():
              tag = "partial"
         else:
             tag = "unpaid" #indicate the color of paid and unpaid
-            U.tree.insert("", "end", values=(
+            tree.insert("", "end", values=(
                 d["id"],
                 d["lender"],
                 d["remaining"],
@@ -160,10 +173,10 @@ def clear_search():
                 d["date"],
                 d["status"]
             ), tags=(tag,))
-refresh_table()
+
 # DELETE DEBT
 def delete_debt():
-    selected = U.tree.item(U.tree.focus(), "values")
+    selected = tree.item(tree.focus(), "values")
 
     if not selected:
         return messagebox.showwarning("Warning", "Select a debt first.")
